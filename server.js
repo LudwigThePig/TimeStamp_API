@@ -14,14 +14,22 @@ app.use(cors({optionSuccessStatus: 200}));  // some legacy browsers choke on 204
 app.use(express.static('public'));
 
 // http://expressjs.com/en/starter/basic-routing.html
-app.get("/", function (req, res) {
-  res.sendFile(__dirname + '/views/index.html');
+app.get("/:dateString", function (req, res) {
+  let returnQuery,
+  unix = Number(req.params.dateString) ? Number(req.params.dateString): Date.parse(req.params.dateString),
+  irl = new Date(unix);
+  if (unix && irl != "Invalid Date"){
+    returnQuery = {"unix": unix.toString(), "utc" : irl.toUTCString()}
+      } else {
+      returnQuery = {"unix": null, "utc": "Not Valid"}
+      }
+  res.json(returnQuery);
 });
 
 
 // your first API endpoint... 
-app.get("/api/hello", function (req, res) {
-  res.json({greeting: 'hello API'});
+app.get("/", function (req, res) {
+  res.sendFile(__dirname + '/views/index.html');
 });
 
 
